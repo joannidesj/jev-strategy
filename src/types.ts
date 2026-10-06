@@ -12,7 +12,7 @@ export type OptionId =
   | "raise_medium"
   | "raise_big"
   | "all_in";
-export type Option = { id: OptionId; description: string };
+export type Option = { id: OptionId; description: string; sizes?: Size[] };
 export type Size = "small" | "medium" | "big" | "all_in";
 export type Style = {
   id: string;

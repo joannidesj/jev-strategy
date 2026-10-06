@@ -117,6 +117,22 @@ describe("decide", () => {
     expect(Object.keys(asked[0]!.criteria)).toEqual(["fold", "call", "raise_big"]);
   });
 
+  it("a merged option survives when any of its sizes is allowed", async () => {
+    const { client, asked } = fake({ bet_small: 1 });
+    const merged: Option[] = [
+      { id: "check", description: "check" },
+      { id: "bet_small", description: "bet 2", sizes: ["small", "medium", "big"] },
+      { id: "bet_medium", description: "bet 4", sizes: ["medium"] },
+      { id: "all_in", description: "everything" },
+    ];
+    const decision = await run(client, {
+      style: { ...style, sizes: ["big", "all_in"] },
+      options: merged,
+    });
+    expect(Object.keys(asked[0]!.criteria)).toEqual(["check", "bet_small", "all_in"]);
+    expect(decision.optionId).toBe("bet_small");
+  });
+
   it("style sizes without any bet or raise keep the plain options", async () => {
     const { client, asked } = fake({ call: 1 });
     await run(client, { style: { ...style, sizes: [] } });

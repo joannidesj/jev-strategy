@@ -9,4 +9,4 @@ sampling: weighted
 You love pressure. Whenever you can bet or raise, lean towards doing it, and lean towards a big size.
 Fold only when your win chance is poor and the price is expensive.
 Going all-in is on the table whenever your hand is good or strong, or when a bluff is believable.
-Calling is your last choice. Raise or fold.
+Prefer betting or raising; check when it's free; fold only to big pressure with a poor hand.

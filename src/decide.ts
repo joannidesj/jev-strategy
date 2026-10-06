@@ -29,7 +29,8 @@ function sizeOf(id: OptionId): Size | undefined {
 function offeredOptions(options: Option[], style: Style): Option[] {
   return options.filter((option) => {
     const size = sizeOf(option.id);
-    return size === undefined || style.sizes.includes(size);
+    if (size === undefined) return true;
+    return (option.sizes ?? [size]).some((s) => style.sizes.includes(s));
   });
 }
 

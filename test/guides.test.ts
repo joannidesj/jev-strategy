@@ -39,6 +39,12 @@ describe("game guides", () => {
     for (const [id, style] of styles) expect(style.id).toBe(id);
   });
 
+  it("jev-pocalypse checks when checking is free instead of folding", async () => {
+    const { instructions } = (await loadStyles("follow-the-queen")).get("jev-pocalypse")!;
+    expect(instructions).not.toContain("Raise or fold");
+    expect(instructions).toContain("check when it's free");
+  });
+
   it("rejects a style with an unknown size", () => {
     const bad = validStyle.replace("[small, big]", "[small, huge]");
     expect(() => parseStyle("sample.md", bad)).toThrow(/size/i);

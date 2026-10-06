@@ -31,7 +31,15 @@ const optionId = z.enum([
 
 const fixtureShape = z.object({
   situation: z.record(jsonValue),
-  options: z.array(z.object({ id: optionId, description: z.string() })).min(1),
+  options: z
+    .array(
+      z.object({
+        id: optionId,
+        description: z.string(),
+        sizes: z.array(z.enum(["small", "medium", "big", "all_in"])).optional(),
+      }),
+    )
+    .min(1),
   choice: optionId,
   probabilities: z.record(optionId, z.number()).nullable(),
 });

@@ -97,6 +97,17 @@ describe("eval", () => {
     for (const file of files) expect(file.fixtures.length).toBeGreaterThan(0);
   });
 
+  it("a fixture keeps the sizes of a merged option", () => {
+    const fixture = {
+      situation: {},
+      options: [{ id: "bet_small", description: "bet 2", sizes: ["small", "big"] }],
+      choice: "bet_small",
+      probabilities: null,
+    };
+    const [parsed] = parseFixtures("merged.json", JSON.stringify([fixture]));
+    expect(parsed!.options[0]!.sizes).toEqual(["small", "big"]);
+  });
+
   it("a malformed fixture file is rejected with its name", () => {
     expect(() => parseFixtures("bad.json", "[{}]")).toThrow("bad.json");
     expect(() => parseFixtures("bad.json", "nope")).toThrow("bad.json");
