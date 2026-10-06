@@ -1,32 +1,49 @@
 # @ftq/jev-strategy
 
 Turns a poker situation into a decision made by Jev, TypeSafe's judgment model.
-The package describes the game in plain words, asks Jev how likely each legal
-option is, and picks one option according to a playing style.
+It describes the game in plain words, asks Jev how likely each legal option is,
+and picks one option according to a playing style.
 
-It knows nothing about the FTQ engine or server. Callers pass in the situation
-and the legal options, and get back one option.
+It knows nothing about the FTQ engine or server. Callers pass in a situation and
+the legal options, and get one option back.
 
-## Pieces
+## What it exports
 
-- `GameGuide`: the rules and general strategy for a game.
-- `Style`: a personality (name, tagline, bet sizes it may use, how it samples
-  from Jev's answer, and its own instructions).
-- `decide`: asks a `DecisionClient` and picks an offered option.
+- `decide({ game, style, situation, options, client, random, signal })`: asks a
+  `DecisionClient` and returns the chosen option, the normalised probabilities,
+  Jev's confidence and the input tokens used.
+- `loadGame(id)` and `loadStyles(id)`: read the rules, the strategy and the
+  styles from `games/<id>/`.
+- `createTypeSafeClient({ apiKey })`: the real `DecisionClient`, using the
+  `jev-latest` model.
 - `DecisionError`: `unavailable`, `transient` or `bad-answer`.
 
 ## Add a style
 
-1. Add a YAML file to the styles folder with `id`, `name`, `tagline`, `sizes`,
-   `sampling` (`top` or `weighted`) and `instructions`.
-2. Keep `instructions` short and written as advice to a player.
-3. Run the tests, then run `eval` to see how the new style plays.
+1. Add `games/<game>/styles/<id>.md`. The file name (without `.md`) must equal
+   the `id` field.
+2. Write YAML frontmatter with these fields:
+   - `id`, `name`, `tagline`: strings.
+   - `sizes`: a list of `small`, `medium`, `big` and `all_in`. Sizes you leave
+     out are never offered to Jev.
+   - `sampling`: `top` takes the most likely option; `weighted` draws one in
+     proportion to its probability.
+3. Write the body as short advice to a player.
+4. Run the tests, then run eval to see how the style plays.
 
 ## Run eval
 
-Set `TYPESAFE_API_KEY`, then run the package's `eval` script from the repo
-root. It plays sample situations against Jev and prints the chosen options.
+Eval replays the recorded decisions in `games/<game>/fixtures/*.json` through a
+style and prints every decision that changed.
 
-## Licence
+```sh
+TYPESAFE_API_KEY=... pnpm -F @ftq/jev-strategy eval [styleId]
+```
+
+The style defaults to `jev-try-hard`. The random draws are seeded, so runs are
+comparable. Without `TYPESAFE_API_KEY` it stops with a message. Fixtures come
+from the server's `jev:fixtures` script.
+
+## License
 
 MIT. See `LICENSE`.

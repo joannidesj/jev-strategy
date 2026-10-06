@@ -1,0 +1,68 @@
+[
+  {
+    "situation": {
+      "game": "Follow the Queen",
+      "bettingRound": 1,
+      "cardsStillToCome": 3,
+      "wildCards": "Queens",
+      "myHand": {
+        "downCards": ["Qs", "As"],
+        "upCards": [],
+        "bestHandNow": "Pair of Aces",
+        "winChance": {
+          "percent": 58,
+          "label": "good"
+        }
+      },
+      "opponents": [
+        {
+          "seat": 0,
+          "upCards": [],
+          "showing": "no cards showing",
+          "threat": "unknown",
+          "stack": 99
+        },
+        {
+          "seat": 2,
+          "upCards": [],
+          "showing": "no cards showing",
+          "threat": "unknown",
+          "stack": 99
+        }
+      ],
+      "money": {
+        "pot": 3,
+        "toCall": 0,
+        "myStack": 99,
+        "priceToCall": {
+          "percent": 0,
+          "label": "free"
+        },
+        "stackToPot": "deep"
+      },
+      "position": "acts before others"
+    },
+    "options": [
+      {
+        "id": "check",
+        "description": "Check without putting in any chips"
+      },
+      {
+        "id": "bet_small",
+        "description": "Bet 2 chips (the smallest bet allowed)"
+      },
+      {
+        "id": "bet_big",
+        "description": "Bet 3 chips (about the size of the pot)"
+      },
+      {
+        "id": "all_in",
+        "description": "Bet 99 chips (all in)"
+      }
+    ],
+    "choice": "check",
+    "probabilities": {
+      "check": 1
+    }
+  }
+]
