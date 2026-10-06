@@ -22,6 +22,7 @@ The game server worked out the numbers in the `Situation`, so trust them rather 
 ## Watch the opponents
 
 - Look at each `opponents[].threat` (low, medium, high). It rates their face-up cards, wild cards included.
+- An `unknown` threat means nothing is showing yet (round 1), so judge them by their betting alone.
 - A high threat showing a pair or wilds probably has a real hand. Respect their bets.
 - A low threat who bets hard may be bluffing. Read their `lastAction` and the size of the bet.
 - More opponents in the hand means more hands that can beat you.
