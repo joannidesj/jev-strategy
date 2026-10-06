@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  DecisionError,
   evaluateFixtures,
   loadFixtures,
   loadGame,
@@ -49,6 +50,34 @@ describe("eval", () => {
       ["a.json", "fold", "call", true],
       ["b.json", "fold", "call", true],
     ]);
+  });
+
+  it("eval keeps going when one fixture fails", async () => {
+    let calls = 0;
+    const flaky: DecisionClient = {
+      async ask(question, signal) {
+        calls += 1;
+        if (calls === 2) throw new DecisionError("transient", "Jev could not be reached");
+        return callAlways.ask(question, signal);
+      },
+    };
+    const seen: string[] = [];
+    const outcome = await evaluateFixtures({
+      fixtures: [{ file: "a.json", fixtures: [fixture("call"), fixture("fold"), fixture("fold")] }],
+      game: await loadGame("follow-the-queen"),
+      style: (await loadStyles("follow-the-queen")).get("jev-try-hard")!,
+      client: flaky,
+      random: seededRandom(1),
+      onResult: (result) => seen.push(result.chosen ?? "error"),
+    });
+    expect(outcome.results.map((r) => [r.chosen, r.changed, r.error])).toEqual([
+      ["call", false, undefined],
+      [null, false, "transient"],
+      ["call", true, undefined],
+    ]);
+    expect(outcome.changed).toBe(1);
+    expect(outcome.errors).toBe(1);
+    expect(seen).toEqual(["call", "error", "call"]);
   });
 
   it("eval refuses to run without TYPESAFE_API_KEY", () => {

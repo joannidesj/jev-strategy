@@ -34,7 +34,9 @@ the legal options, and get one option back.
 ## Run eval
 
 Eval replays the recorded decisions in `games/<game>/fixtures/*.json` through a
-style and prints every decision that changed.
+style. It prints one line per fixture with the recorded choice and the new
+choice, marks the ones that changed, and ends with the number changed and the
+number of fixtures where Jev failed (a failure does not stop the run).
 
 ```sh
 TYPESAFE_API_KEY=... pnpm -F @ftq/jev-strategy eval [styleId]

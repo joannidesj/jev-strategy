@@ -1,6 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { z } from "zod";
 import { decide } from "./decide.js";
+import { DecisionError } from "./types.js";
 import type {
   DecisionClient,
   GameGuide,
@@ -44,7 +45,13 @@ export type Fixture = {
 
 export type FixtureFile = { file: string; fixtures: Fixture[] };
 
-export type EvalResult = { file: string; recorded: OptionId; chosen: OptionId; changed: boolean };
+export type EvalResult = {
+  file: string;
+  recorded: OptionId;
+  chosen: OptionId | null;
+  changed: boolean;
+  error?: string;
+};
 
 export function parseFixtures(file: string, text: string): Fixture[] {
   let data: unknown;
@@ -97,30 +104,54 @@ type EvaluateInput = {
   style: Style;
   client: DecisionClient;
   random: () => number;
+  onResult?: (result: EvalResult) => void;
 };
+
+function failureLabel(error: unknown): string {
+  if (error instanceof DecisionError) return error.kind;
+  if (error instanceof Error && error.name === "AbortError") throw error;
+  return error instanceof Error ? error.message : "unknown failure";
+}
 
 export async function evaluateFixtures(
   input: EvaluateInput,
-): Promise<{ results: EvalResult[]; changed: number }> {
+): Promise<{ results: EvalResult[]; changed: number; errors: number }> {
   const results: EvalResult[] = [];
   for (const { file, fixtures } of input.fixtures) {
     for (const fixture of fixtures) {
-      const decision = await decide({
-        game: input.game,
-        style: input.style,
-        situation: fixture.situation,
-        options: fixture.options,
-        client: input.client,
-        random: input.random,
-        signal: new AbortController().signal,
-      });
-      results.push({
-        file,
-        recorded: fixture.choice,
-        chosen: decision.optionId,
-        changed: decision.optionId !== fixture.choice,
-      });
+      let result: EvalResult;
+      try {
+        const decision = await decide({
+          game: input.game,
+          style: input.style,
+          situation: fixture.situation,
+          options: fixture.options,
+          client: input.client,
+          random: input.random,
+          signal: new AbortController().signal,
+        });
+        result = {
+          file,
+          recorded: fixture.choice,
+          chosen: decision.optionId,
+          changed: decision.optionId !== fixture.choice,
+        };
+      } catch (error) {
+        result = {
+          file,
+          recorded: fixture.choice,
+          chosen: null,
+          changed: false,
+          error: failureLabel(error),
+        };
+      }
+      results.push(result);
+      input.onResult?.(result);
     }
   }
-  return { results, changed: results.filter((result) => result.changed).length };
+  return {
+    results,
+    changed: results.filter((result) => result.changed).length,
+    errors: results.filter((result) => result.error !== undefined).length,
+  };
 }

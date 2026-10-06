@@ -18,19 +18,18 @@ try {
   const style = styles.get(styleId);
   if (!style) throw new Error(`Unknown style ${styleId}. Known: ${[...styles.keys()].join(", ")}`);
   const fixtures = await loadFixtures(GAME);
-  const { results, changed } = await evaluateFixtures({
+  const { results, changed, errors } = await evaluateFixtures({
     fixtures,
     game: await loadGame(GAME),
     style,
     client: createTypeSafeClient({ apiKey }),
     random: seededRandom(SEED),
+    onResult: (r) => {
+      const now = r.error ? `error (${r.error})` : r.chosen;
+      console.log(`${r.file}: recorded ${r.recorded}, now ${now}${r.changed ? "  (changed)" : ""}`);
+    },
   });
-  for (const r of results) {
-    console.log(
-      `${r.file}: recorded ${r.recorded}, now ${r.chosen}${r.changed ? "  (changed)" : ""}`,
-    );
-  }
-  console.log(`Changed decisions: ${changed} of ${results.length} (style ${style.id})`);
+  console.log(`Changed ${changed} of ${results.length}, errors ${errors} (style ${style.id})`);
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
   process.exitCode = 1;
