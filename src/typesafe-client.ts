@@ -37,8 +37,8 @@ export function createTypeSafeClient(config: { apiKey: string; fetch?: Fetch }):
   const client = new TypeSafeClient({
     apiKey: config.apiKey,
     logLevel: "off",
-    timeout: 4000,
-    retry: { maxRetries: 1 },
+    timeout: 1500,
+    retry: { maxRetries: 1, backoffInitialMs: 200 },
     ...(config.fetch ? { fetch: config.fetch } : {}),
   });
   return {

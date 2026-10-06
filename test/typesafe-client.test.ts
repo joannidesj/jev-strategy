@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createTypeSafeClient } from "../src/typesafe-client.js";
 import { DecisionError, type JevQuestion } from "../src/types.js";
 
@@ -39,6 +39,10 @@ async function failureOf(promise: Promise<unknown>): Promise<unknown> {
 }
 
 describe("createTypeSafeClient", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("maps a choice answer and token usage", async () => {
     const requests: { url: string; body: unknown }[] = [];
     const client = createTypeSafeClient({
@@ -98,6 +102,29 @@ describe("createTypeSafeClient", () => {
     });
     const error = await failureOf(client.ask(question, new AbortController().signal));
     expect((error as DecisionError).kind).toBe("transient");
+  });
+
+  it("a hanging attempt is abandoned after 1500 ms and one retry fits inside 4 s", async () => {
+    vi.useFakeTimers();
+    let calls = 0;
+    const client = createTypeSafeClient({
+      apiKey,
+      fetch: (_input, init) => {
+        calls += 1;
+        return new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => reject(new Error("aborted")));
+        });
+      },
+    });
+    const result = failureOf(client.ask(question, new AbortController().signal));
+    await vi.advanceTimersByTimeAsync(1499);
+    expect(calls).toBe(1);
+    await vi.advanceTimersByTimeAsync(1 + 200);
+    expect(calls).toBe(2);
+    await vi.advanceTimersByTimeAsync(1500);
+    const error = await result;
+    expect((error as DecisionError).kind).toBe("transient");
+    expect(calls).toBe(2);
   });
 
   it("abort becomes AbortError", async () => {
