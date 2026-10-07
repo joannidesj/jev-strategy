@@ -46,6 +46,16 @@ The style defaults to `jev-try-hard`. The random draws are seeded, so runs are
 comparable. Without `TYPESAFE_API_KEY` it stops with a message. Fixtures come
 from the server's `jev:fixtures` script.
 
+## Releasing a new Jev
+
+Jev changes only when the maintainer deploys a release.
+
+1. Merge the accepted playbook pull requests.
+2. Run eval.
+3. Bump `version` in `package.json`.
+4. Add an entry to `RELEASES.md`.
+5. Deploy.
+
 ## License
 
 MIT. See `LICENSE`.
