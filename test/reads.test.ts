@@ -74,6 +74,15 @@ describe("buildReads", () => {
     });
   });
 
+  it("gives each strength question the chances from the visible cards alone, in words", () => {
+    const priors = new Map([[4, [0.1, 0.1, 0.2, 0.4, 0.2]]]);
+    const request = buildReads({ guide, situation, opponentSeats: [2, 4], options, style, priors });
+    expect(request.questions.strength_4!.instructions).toMatchObject({
+      fromVisibleCards: { a: "10%", b: "10%", c: "20%", d: "40%", e: "20%" },
+    });
+    expect(request.questions.strength_2!.instructions).not.toHaveProperty("fromVisibleCards");
+  });
+
   it("the instinct is a choice over the offered options with only the style text", () => {
     const request = buildReads({ guide, situation, opponentSeats: [2, 4], options, style });
     expect(request.questions.instinct).toEqual({

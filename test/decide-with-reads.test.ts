@@ -6,6 +6,7 @@ import {
   type Option,
   type ReadAnswer,
   type ReadsGuide,
+  type ReadsRequest,
   type StrengthReads,
   type Style,
 } from "../src/index.js";
@@ -42,6 +43,7 @@ const chips: Record<string, number> = { fold: 0, check: 0, call: 10, bet_big: 30
 function adapter(seen: StrengthReads[] = []): GameAdapter<View> {
   return {
     opponents: () => [3],
+    priors: () => new Map([[3, [0.1, 0.1, 0.2, 0.4, 0.2]]]),
     pot: (view) => view.pot,
     toCall: (view) => view.toCall,
     costs: (_view, options) => options.map((o) => ({ id: o.id, chips: chips[o.id] ?? 0 })),
@@ -135,5 +137,30 @@ describe("decideWithReads", () => {
       seen,
     );
     expect(seen[0]!.size).toBe(0);
+  });
+
+  it("puts the chances from the visible cards into the strength question", async () => {
+    let asked: ReadsRequest | undefined;
+    const capture: DecisionClient = {
+      ask: () => Promise.reject(new Error("not used")),
+      read: async (request) => {
+        asked = request;
+        return { answers: {}, inputTokens: 1 };
+      },
+    };
+    await decideWithReads({
+      adapter: adapter(),
+      view: { pot: 30, toCall: 0, win: 0.5 },
+      situation: {},
+      options: [option("check")],
+      guide,
+      style,
+      client: capture,
+      random: () => 0,
+      signal: new AbortController().signal,
+    });
+    expect(asked!.questions.strength_3!.instructions).toMatchObject({
+      fromVisibleCards: { a: "10%", b: "10%", c: "20%", d: "40%", e: "20%" },
+    });
   });
 });

@@ -66,6 +66,7 @@ export async function decideWithReads<View>(input: ReadsInput<View>): Promise<Re
     opponentSeats,
     options,
     style,
+    priors: adapter.priors(view),
   });
   const answer = await input.client.read(request, input.signal);
   const reads = answer.answers;

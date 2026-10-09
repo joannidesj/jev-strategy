@@ -6,16 +6,28 @@ type ReadsInput = {
   opponentSeats: number[];
   options: Option[];
   style: Style;
+  priors?: ReadonlyMap<number, number[]>;
 };
 
+function inWords(levels: string[], chances: number[]): Record<string, string> {
+  return Object.fromEntries(
+    levels.map((level, i) => [level, `${Math.round((chances[i] ?? 0) * 100)}%`]),
+  );
+}
+
 export function buildReads(input: ReadsInput): ReadsRequest {
-  const { guide, situation, opponentSeats, options, style } = input;
+  const { guide, situation, opponentSeats, options, style, priors } = input;
   const questions: Record<string, ReadQuestion> = {};
   opponentSeats.forEach((seat, index) => {
     const about = `\`opponents[${index}]\``;
+    const prior = priors?.get(seat);
     questions[`strength_${seat}`] = {
       type: "score",
-      instructions: { question: guide.strength.question, about },
+      instructions: {
+        question: guide.strength.question,
+        about,
+        ...(prior ? { fromVisibleCards: inWords(guide.strength.levels, prior) } : {}),
+      },
       criteria: guide.strength.levels,
     };
     questions[`bluffing_${seat}`] = {

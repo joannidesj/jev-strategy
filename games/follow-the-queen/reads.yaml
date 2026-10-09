@@ -7,8 +7,10 @@ notes: >-
 strength:
   question: >-
     If this player reaches showdown, how strong will their five-card hand be?
-    Judge from their face-up cards, the wild cards, how they have bet this hand
-    and their habits.
+    Start from fromVisibleCards, the chance of each level given only the cards
+    anyone can see. In this game wild cards make strong hands common. Then move
+    those chances for how this player has bet this hand and their habits:
+    heavy betting from a careful player points to the stronger levels.
   levels:
     - "Nothing: high card at showdown"
     - "One small pair (Sevens to Tens)"

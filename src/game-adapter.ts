@@ -7,6 +7,7 @@ export type StrengthReads = ReadonlyMap<number, { levels: number[]; trust: numbe
 // everything else is plain chips and chances.
 export interface GameAdapter<View> {
   opponents(view: View): number[];
+  priors(view: View): ReadonlyMap<number, number[]>;
   pot(view: View): number;
   toCall(view: View): number;
   costs(view: View, options: Option[]): OptionCost[];
