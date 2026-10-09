@@ -38,10 +38,11 @@ export type ReadsGuide = {
   folds: { question: string; yes: string; no: string };
   board: { question: string; levels: string[] };
 };
+export type ReadInstructions = string | { [key: string]: JsonValue };
 export type ReadQuestion =
-  | { type: "score"; instructions: JsonValue; criteria: string[] }
-  | { type: "noul"; instructions: JsonValue; criteria: { true: string; false: string } }
-  | { type: "choice"; instructions: JsonValue; criteria: Record<string, string> };
+  | { type: "score"; instructions: ReadInstructions; criteria: string[] }
+  | { type: "noul"; instructions: ReadInstructions; criteria: { true: string; false: string } }
+  | { type: "choice"; instructions: ReadInstructions; criteria: Record<string, string> };
 export type ReadsRequest = { state: Situation; questions: Record<string, ReadQuestion> };
 export type Decision = {
   optionId: OptionId;
@@ -61,8 +62,18 @@ export type JevAnswer = {
   inputTokens: number;
   model?: string;
 };
+export type ReadAnswer =
+  | { type: "score"; probabilities: number[]; confidence: number }
+  | { type: "noul"; noul: number }
+  | { type: "choice"; probabilities: Record<string, number>; confidence: number };
+export type ReadsAnswer = {
+  answers: Record<string, ReadAnswer>;
+  inputTokens: number;
+  model?: string;
+};
 export interface DecisionClient {
   ask(question: JevQuestion, signal: AbortSignal): Promise<JevAnswer>;
+  read(request: ReadsRequest, signal: AbortSignal): Promise<ReadsAnswer>;
 }
 export type DecisionErrorKind = "unavailable" | "transient" | "bad-answer";
 

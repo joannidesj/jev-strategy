@@ -67,6 +67,69 @@ describe("createTypeSafeClient", () => {
     });
   });
 
+  it("reads send score, noul and choice questions and map their answers", async () => {
+    const requests: unknown[] = [];
+    const client = createTypeSafeClient({
+      apiKey,
+      fetch: async (_input, init) => {
+        requests.push(JSON.parse(String(init?.body)));
+        return json({
+          model: "jev-1.13.0",
+          answers: {
+            strength_2: {
+              type: "score",
+              score: 1.2,
+              confidence: 0.4,
+              legend: { 0: "a", 1: "b", 2: "c" },
+              probabilities: { 2: 0.3, 0: 0.1, 1: 0.6 },
+            },
+            folds_2: { type: "noul", noul: 0.25 },
+            instinct: {
+              type: "choice",
+              choice: "call",
+              confidence: 0.5,
+              probabilities: { fold: 0.25, call: 0.75 },
+            },
+          },
+          usage: { input_tokens: 900, output_tokens: 10 },
+        });
+      },
+    });
+    const reads = await client.read(
+      {
+        state: { notes: "n", situation: { pot: 3 } },
+        questions: {
+          strength_2: {
+            type: "score",
+            instructions: { question: "how strong" },
+            criteria: ["a", "b", "c"],
+          },
+          folds_2: { type: "noul", instructions: "fold?", criteria: { true: "yes", false: "no" } },
+          instinct: { type: "choice", instructions: "which", criteria: { fold: "f", call: "c" } },
+        },
+      },
+      new AbortController().signal,
+    );
+    expect(reads).toEqual({
+      answers: {
+        strength_2: { type: "score", probabilities: [0.1, 0.6, 0.3], confidence: 0.4 },
+        folds_2: { type: "noul", noul: 0.25 },
+        instinct: { type: "choice", probabilities: { fold: 0.25, call: 0.75 }, confidence: 0.5 },
+      },
+      inputTokens: 900,
+      model: "jev-1.13.0",
+    });
+    expect(requests[0]).toMatchObject({
+      model: "jev-latest",
+      state: { notes: "n", situation: { pot: 3 } },
+      questions: {
+        strength_2: { type: "score", criteria: ["a", "b", "c"] },
+        folds_2: { type: "noul" },
+        instinct: { type: "choice", criteria: { fold: "f", call: "c" } },
+      },
+    });
+  });
+
   it("401 is unavailable", async () => {
     const client = createTypeSafeClient({ apiKey, fetch: async () => json({ error: "no" }, 401) });
     const error = await failureOf(client.ask(question, new AbortController().signal));

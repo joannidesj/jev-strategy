@@ -39,6 +39,7 @@ const situation = { pot: 10 };
 function fake(probabilities: Record<string, number>) {
   const asked: JevQuestion[] = [];
   const client: DecisionClient = {
+    read: () => Promise.reject(new Error("reads are not used here")),
     async ask(question): Promise<JevAnswer> {
       asked.push(question);
       return { probabilities, confidence: 0.7, inputTokens: 123 };
@@ -85,6 +86,7 @@ describe("decide", () => {
 
   it("passes on the model that answered", async () => {
     const client: DecisionClient = {
+      read: () => Promise.reject(new Error("reads are not used here")),
       ask: async () => ({
         probabilities: { call: 1 },
         confidence: 1,
@@ -215,6 +217,7 @@ describe("decide", () => {
     const controller = new AbortController();
     const abort = new DOMException("aborted", "AbortError");
     const client: DecisionClient = {
+      read: () => Promise.reject(new Error("reads are not used here")),
       ask: () => Promise.reject(abort),
     };
     controller.abort();

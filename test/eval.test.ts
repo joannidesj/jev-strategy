@@ -25,6 +25,7 @@ const fixture = (choice: "fold" | "call") => ({
 });
 
 const callAlways: DecisionClient = {
+  read: () => Promise.reject(new Error("reads are not used here")),
   async ask() {
     return { probabilities: { call: 1 }, confidence: 1, inputTokens: 5 };
   },
