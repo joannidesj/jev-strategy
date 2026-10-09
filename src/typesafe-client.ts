@@ -44,7 +44,7 @@ export function createTypeSafeClient(config: { apiKey: string; fetch?: Fetch }):
   return {
     async ask(question: JevQuestion, signal: AbortSignal): Promise<JevAnswer> {
       try {
-        const { answers, usage } = await client.systemOne(
+        const { answers, usage, model } = await client.systemOne(
           {
             model: jevModel,
             state: question.state,
@@ -56,6 +56,7 @@ export function createTypeSafeClient(config: { apiKey: string; fetch?: Fetch }):
           probabilities: answers.action.probabilities,
           confidence: answers.action.confidence,
           inputTokens: usage.input_tokens,
+          model,
         };
       } catch (error) {
         throw toFailure(error);

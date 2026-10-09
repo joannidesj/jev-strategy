@@ -75,6 +75,18 @@ describe("decide", () => {
     expect(decision.inputTokens).toBe(123);
   });
 
+  it("passes on the model that answered", async () => {
+    const client: DecisionClient = {
+      ask: async () => ({
+        probabilities: { call: 1 },
+        confidence: 1,
+        inputTokens: 5,
+        model: "jev-1.13.0",
+      }),
+    };
+    expect((await run(client)).model).toBe("jev-1.13.0");
+  });
+
   it("top sampling gives ties to the earlier option", async () => {
     const { client } = fake({ call: 0.5, fold: 0.5 });
     expect((await run(client)).optionId).toBe("fold");

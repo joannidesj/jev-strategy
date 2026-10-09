@@ -57,6 +57,7 @@ describe("createTypeSafeClient", () => {
       probabilities: { fold: 0.2, call: 0.8 },
       confidence: 0.8,
       inputTokens: 123,
+      model: "jev-latest",
     });
     expect(requests).toHaveLength(1);
     expect(requests[0]!.body).toMatchObject({

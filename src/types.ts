@@ -28,6 +28,7 @@ export type Decision = {
   probabilities: Partial<Record<OptionId, number>>;
   confidence: number;
   inputTokens: number;
+  model?: string;
 };
 export type JevQuestion = {
   state: { rules: string; situation: Situation };
@@ -38,6 +39,7 @@ export type JevAnswer = {
   probabilities: Record<string, number>;
   confidence: number;
   inputTokens: number;
+  model?: string;
 };
 export interface DecisionClient {
   ask(question: JevQuestion, signal: AbortSignal): Promise<JevAnswer>;

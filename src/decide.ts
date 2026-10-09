@@ -89,5 +89,6 @@ export async function decide(input: DecideInput): Promise<Decision> {
     probabilities,
     confidence: answer.confidence,
     inputTokens: answer.inputTokens,
+    model: answer.model,
   };
 }
