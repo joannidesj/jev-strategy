@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "eval": "tsx eval/run.ts"
+    "eval": "tsx --env-file-if-exists=../server/.env eval/run.ts"
   },
   "dependencies": {
     "@typesafe-ai/sdk": "^0.6.0",
