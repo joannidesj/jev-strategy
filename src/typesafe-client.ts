@@ -10,7 +10,7 @@ import {
 } from "@typesafe-ai/sdk";
 import { DecisionError, type DecisionClient, type JevAnswer, type JevQuestion } from "./types.js";
 
-const MODEL = "jev-latest";
+export const jevModel = "jev-latest";
 
 function aborted(): Error {
   const error = new Error("The decision was aborted");
@@ -46,7 +46,7 @@ export function createTypeSafeClient(config: { apiKey: string; fetch?: Fetch }):
       try {
         const { answers, usage } = await client.systemOne(
           {
-            model: MODEL,
+            model: jevModel,
             state: question.state,
             questions: { action: choice(question.instructions, question.criteria) },
           },
