@@ -17,7 +17,7 @@ const frontmatterShape = z.object({
   bluffBoost: z.number().positive().default(1),
   instinctWeight: z.number().min(0).default(0.1),
   bluffFloor: z.number().min(0).max(1).default(0.6),
-  realize: z.number().min(0).max(1).default(1),
+  realize: z.number().gt(0).max(1).default(1),
 });
 
 const readsShape = z.object({

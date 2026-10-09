@@ -17,7 +17,7 @@ function evOf(spot: SpotOdds, option: OptionCost, fe: number): number {
   if (option.id === "call") return kept * (pot + option.chips) - option.chips;
   const chips = option.chips;
   const calledAdds = Math.max(0, chips - toCall);
-  const whenCalled = eqCalled * (pot + chips + calledAdds) - chips;
+  const whenCalled = eqCalled * (spot.realize ?? 1) * (pot + chips + calledAdds) - chips;
   const scare = fe * Math.min(1, calledAdds / Math.max(pot, 1));
   return scare * pot + (1 - scare) * whenCalled;
 }

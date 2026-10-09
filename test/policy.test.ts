@@ -129,3 +129,12 @@ describe("optionEvs with realised equity", () => {
     expect(optionEvs({ ...spot, realize: 1 }, options, 0)).toEqual(optionEvs(spot, options, 0));
   });
 });
+
+describe("optionEvs realised equity on bets", () => {
+  it("discounts the called part of a bet but not the pot won when they fold", () => {
+    const spot = { pot: 100, toCall: 0, eq: 0.5, eqCalled: 0.4, realize: 0.6 };
+    const evs = optionEvs(spot, [{ id: "bet_big", chips: 100 }], 0.3);
+    const called = 0.6 * 0.4 * (100 + 200) - 100;
+    expect(evs.bet_big).toBeCloseTo(0.3 * 100 + 0.7 * called);
+  });
+});
