@@ -3,7 +3,8 @@ notes: >-
   Each player gets two cards face down, then three face up, with a betting
   round before each face-up card and one after the last. Queens are always
   wild. When a Queen is dealt face up, the rank of the next face-up card also
-  becomes wild. Wild cards can be any card. No-limit betting with play chips.
+  becomes wild. Wild cards can be any card. Bets and raises add at most 10
+  play chips.
 strength:
   question: >-
     If this player reaches showdown, how strong will their five-card hand be?

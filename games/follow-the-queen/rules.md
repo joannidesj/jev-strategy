@@ -1,6 +1,6 @@
 # Follow the Queen: the rules
 
-Follow the Queen is a five-card stud poker game with wild cards. Play is no-limit and uses play money.
+Follow the Queen is a five-card stud poker game with wild cards. Each player starts with 50 play chips, and each bet or raise adds at most 10 chips.
 
 ## The deck and the players
 
@@ -62,7 +62,8 @@ Example: a face-up Queen, then a face-up 9. Now Queens and every 9 are wild. If 
 
 - You can **fold**, **check** (only when there is nothing to call), **call**, **bet** (only when nobody has bet this round), or **raise**.
 - A bet must be at least the minimum bet. A raise must add at least the minimum bet, or the size of the last full bet or raise this round, whichever is larger.
-- You may always go **all-in** for less than a full bet or raise. An all-in that is less than a full raise does not let players who already acted raise again.
+- A bet is at most 10 chips, and a raise adds at most 10 chips to the current bet. Players may raise again every turn.
+- You may always call or bet with everything you have left (**all-in**) when it is less than the amount needed. An all-in that is less than a full raise does not let players who already acted raise again.
 - A round ends when every player still in, and not all-in, has acted since the last full bet or raise and has matched the current bet.
 - All-in amounts that other players cannot match go into side pots. Each pot goes to the best hand among the players who can win it.
 - If a split pot has an odd chip, it goes to the winner closest to the left of the button.
