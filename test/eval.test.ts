@@ -56,6 +56,7 @@ describe("eval", () => {
   it("eval keeps going when one fixture fails", async () => {
     let calls = 0;
     const flaky: DecisionClient = {
+      read: callAlways.read,
       async ask(question, signal) {
         calls += 1;
         if (calls === 2) throw new DecisionError("transient", "Jev could not be reached");
