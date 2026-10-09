@@ -9,6 +9,9 @@ const frontmatterShape = z.object({
   tagline: z.string().min(1),
   sizes: z.array(z.enum(["small", "medium", "big", "all_in"])).min(1),
   sampling: z.enum(["top", "weighted"]),
+  floor: z.number().min(0).lt(1).default(0),
+  temperature: z.number().positive().default(1),
+  minConfidence: z.number().min(0).max(1).default(0),
 });
 
 const frontmatterPattern = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;

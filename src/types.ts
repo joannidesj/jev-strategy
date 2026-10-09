@@ -20,6 +20,9 @@ export type Style = {
   tagline: string;
   sizes: Size[];
   sampling: "top" | "weighted";
+  floor: number;
+  temperature: number;
+  minConfidence: number;
   instructions: string;
 };
 export type GameGuide = { id: string; rules: string; strategy: string };

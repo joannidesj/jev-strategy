@@ -24,6 +24,9 @@ sampling: top
 Play it straight.
 `;
 
+const withLines = (...lines: string[]) =>
+  validStyle.replace("sampling: top", ["sampling: top", ...lines].join("\n"));
+
 describe("game guides", () => {
   it("loads the follow-the-queen guide", async () => {
     const guide = await loadGame("follow-the-queen");
@@ -60,5 +63,27 @@ describe("game guides", () => {
 
   it("style instructions are the Markdown body", () => {
     expect(parseStyle("sample.md", validStyle).instructions).toBe("Play it straight.");
+  });
+
+  it("gates default to off: no floor, temperature 1, no confidence minimum", () => {
+    expect(parseStyle("sample.md", validStyle)).toMatchObject({
+      floor: 0,
+      temperature: 1,
+      minConfidence: 0,
+    });
+  });
+
+  it("reads floor, temperature and minConfidence from frontmatter", () => {
+    const tuned = withLines("floor: 0.05", "temperature: 0.7", "minConfidence: 0.2");
+    expect(parseStyle("sample.md", tuned)).toMatchObject({
+      floor: 0.05,
+      temperature: 0.7,
+      minConfidence: 0.2,
+    });
+  });
+
+  it("rejects a temperature of zero and a floor of one or more", () => {
+    expect(() => parseStyle("sample.md", withLines("temperature: 0"))).toThrow(/temperature/);
+    expect(() => parseStyle("sample.md", withLines("floor: 1"))).toThrow(/floor/);
   });
 });

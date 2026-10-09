@@ -57,6 +57,24 @@ function pickWeighted(
   return [...ids].reverse().find((id) => probabilities[id] > 0)!;
 }
 
+function gate(
+  ids: OptionId[],
+  probabilities: Record<OptionId, number>,
+  style: Style,
+): Record<OptionId, number> {
+  const kept = ids.some((id) => probabilities[id] >= style.floor)
+    ? ids.filter((id) => probabilities[id] >= style.floor)
+    : ids;
+  const sharpened = ids.map((id) =>
+    kept.includes(id) ? probabilities[id] ** (1 / style.temperature) : 0,
+  );
+  const total = sharpened.reduce((sum, p) => sum + p, 0);
+  return Object.fromEntries(ids.map((id, i) => [id, sharpened[i]! / total])) as Record<
+    OptionId,
+    number
+  >;
+}
+
 export async function decide(input: DecideInput): Promise<Decision> {
   const { game, style, situation, client, signal } = input;
   if (input.options.length === 0) throw new Error("decide needs at least one option");
@@ -80,10 +98,9 @@ export async function decide(input: DecideInput): Promise<Decision> {
     OptionId,
     number
   >;
+  const gated = gate(ids, probabilities, style);
   const optionId =
-    style.sampling === "top"
-      ? pickTop(ids, probabilities)
-      : pickWeighted(ids, probabilities, input.random());
+    style.sampling === "top" ? pickTop(ids, gated) : pickWeighted(ids, gated, input.random());
   return {
     optionId,
     probabilities,

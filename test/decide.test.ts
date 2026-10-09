@@ -17,6 +17,9 @@ const style: Style = {
   tagline: "t",
   sizes: ["small", "medium", "big", "all_in"],
   sampling: "top",
+  floor: 0,
+  temperature: 1,
+  minConfidence: 0,
   instructions: "be bold",
 };
 const options: Option[] = [
@@ -90,6 +93,38 @@ describe("decide", () => {
   it("top sampling gives ties to the earlier option", async () => {
     const { client } = fake({ call: 0.5, fold: 0.5 });
     expect((await run(client)).optionId).toBe("fold");
+  });
+
+  it("a floor drops unlikely options before a weighted draw", async () => {
+    const pair = options.slice(0, 2);
+    const answer = { fold: 0.05, call: 0.95 };
+    const draw = { options: pair, random: () => 0.01 };
+    const plain: Style = { ...style, sampling: "weighted" };
+    expect((await run(fake(answer).client, { ...draw, style: plain })).optionId).toBe("fold");
+    const floored: Style = { ...plain, floor: 0.1 };
+    expect((await run(fake(answer).client, { ...draw, style: floored })).optionId).toBe("call");
+  });
+
+  it("a floor above every option keeps them all", async () => {
+    const floored: Style = { ...style, sampling: "weighted", floor: 0.9 };
+    const decision = await run(fake({ fold: 0.5, call: 0.5 }).client, {
+      style: floored,
+      options: options.slice(0, 2),
+      random: () => 0.1,
+    });
+    expect(decision.optionId).toBe("fold");
+  });
+
+  it("a temperature below one sharpens the draw toward the likeliest option", async () => {
+    const pair = options.slice(0, 2);
+    const answer = { fold: 0.3, call: 0.7 };
+    const draw = { options: pair, random: () => 0.2 };
+    const plain: Style = { ...style, sampling: "weighted" };
+    expect((await run(fake(answer).client, { ...draw, style: plain })).optionId).toBe("fold");
+    const sharp: Style = { ...plain, temperature: 0.5 };
+    const decision = await run(fake(answer).client, { ...draw, style: sharp });
+    expect(decision.optionId).toBe("call");
+    expect(decision.probabilities).toEqual({ fold: 0.3, call: 0.7 });
   });
 
   it("weighted sampling follows the random draw", async () => {
