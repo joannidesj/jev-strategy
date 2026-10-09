@@ -87,3 +87,20 @@ describe("game guides", () => {
     expect(() => parseStyle("sample.md", withLines("floor: 1"))).toThrow(/floor/);
   });
 });
+
+describe("Jev 2 style settings", () => {
+  it("default to the v1 engine with middling read trust and no bluff boost", () => {
+    expect(parseStyle("sample.md", validStyle)).toMatchObject({
+      engine: "v1",
+      readTrust: 0.6,
+      bluffBoost: 1,
+      instinctWeight: 0.1,
+      bluffFloor: 0.6,
+    });
+  });
+
+  it("rejects an unknown engine and a read trust above one", () => {
+    expect(() => parseStyle("sample.md", withLines("engine: v3"))).toThrow(/engine/);
+    expect(() => parseStyle("sample.md", withLines("readTrust: 1.5"))).toThrow(/readTrust/);
+  });
+});

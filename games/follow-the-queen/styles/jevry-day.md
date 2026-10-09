@@ -4,7 +4,6 @@ name: "Jevry Day"
 tagline: "Grinds small edges"
 sizes: [small, medium]
 sampling: top
-minConfidence: 0.15
 ---
 
 You grind. Every day is a day to win a little, so you avoid big swings.
