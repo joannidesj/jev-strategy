@@ -55,10 +55,17 @@ describe("optionEvs", () => {
     expect(optionEvs(spot, [{ id: "call", chips: 20 }], 0).call).toBeCloseTo(0.5 * 120 - 20);
   });
 
-  it("a raise wins the pot when they fold and plays a bigger pot when called", () => {
-    const evs = optionEvs(spot, [{ id: "raise_big", chips: 60 }], 0.3);
-    const called = 0.4 * (100 + 60 + 40) - 60;
-    expect(evs.raise_big).toBeCloseTo(0.3 * 100 + 0.7 * called);
+  it("a pot-sized bet or bigger gets the full fold equity", () => {
+    const evs = optionEvs({ ...spot, toCall: 0 }, [{ id: "bet_big", chips: 100 }], 0.3);
+    const called = 0.4 * (100 + 200) - 100;
+    expect(evs.bet_big).toBeCloseTo(0.3 * 100 + 0.7 * called);
+  });
+
+  it("a smaller bet scares less: fold equity shrinks with the bet's share of the pot", () => {
+    const evs = optionEvs({ ...spot, toCall: 0 }, [{ id: "bet_small", chips: 25 }], 0.4);
+    const fe = 0.4 * 0.25;
+    const called = 0.4 * (100 + 50) - 25;
+    expect(evs.bet_small).toBeCloseTo(fe * 100 + (1 - fe) * called);
   });
 });
 
