@@ -39,12 +39,16 @@ choice, marks the ones that changed, and ends with the number changed and the
 number of fixtures where Jev failed (a failure does not stop the run).
 
 ```sh
-TYPESAFE_API_KEY=... pnpm -F @ftq/jev-strategy eval [styleId]
+pnpm -F @ftq/jev-strategy eval [styleId]
 ```
 
-The style defaults to `jev-try-hard`. The random draws are seeded, so runs are
+Eval reads `TYPESAFE_API_KEY` from `packages/server/.env` when it exists, or
+from the environment. The style defaults to `jev-try-hard`. The random draws are seeded, so runs are
 comparable. Without `TYPESAFE_API_KEY` it stops with a message. Fixtures come
 from the server's `jev:fixtures` script.
+
+For more checks against a running server, see
+[docs/ops/jev-checks.md](../../docs/ops/jev-checks.md).
 
 ## Releasing a new Jev
 
