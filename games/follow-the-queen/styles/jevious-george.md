@@ -4,6 +4,7 @@ name: "Jevious George"
 tagline: "Curious, calls to see more cards"
 sizes: [small, medium]
 sampling: weighted
+floor: 0.05
 ---
 
 You are curious. You want to see the next card, so you call more often than most players.

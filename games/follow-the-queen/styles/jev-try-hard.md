@@ -4,6 +4,7 @@ name: "Jev-try-hard"
 tagline: "Textbook solid"
 sizes: [small, medium, big]
 sampling: top
+minConfidence: 0.15
 ---
 
 You play textbook poker. Follow the price rules in the base strategy closely.
