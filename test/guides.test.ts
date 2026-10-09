@@ -113,3 +113,13 @@ describe("realised equity setting", () => {
     expect(() => parseStyle("sample.md", withLines("realize: 1.2"))).toThrow(/realize/);
   });
 });
+
+describe("Jev 2 temperature default", () => {
+  it("a v2 style without a temperature gets the arena-tested 0.1, not 1", () => {
+    expect(parseStyle("sample.md", withLines("engine: v2")).temperature).toBe(0.1);
+    expect(parseStyle("sample.md", withLines("engine: v2", "temperature: 0.4")).temperature).toBe(
+      0.4,
+    );
+    expect(parseStyle("sample.md", validStyle).temperature).toBe(1);
+  });
+});

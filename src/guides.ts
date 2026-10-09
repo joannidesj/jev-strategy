@@ -10,7 +10,7 @@ const frontmatterShape = z.object({
   sizes: z.array(z.enum(["small", "medium", "big", "all_in"])).min(1),
   sampling: z.enum(["top", "weighted"]),
   floor: z.number().min(0).lt(1).default(0),
-  temperature: z.number().positive().default(1),
+  temperature: z.number().positive().optional(),
   minConfidence: z.number().min(0).max(1).default(0),
   engine: z.enum(["v1", "v2"]).default("v1"),
   readTrust: z.number().min(0).max(1).default(0.6),
@@ -56,7 +56,8 @@ export function parseStyle(fileName: string, markdown: string): Style {
       `Style ${fileName} has id "${result.data.id}" but the file is named ${expectedId}`,
     );
   }
-  return { ...result.data, instructions: (match[2] ?? "").trim() };
+  const temperature = result.data.temperature ?? (result.data.engine === "v2" ? 0.1 : 1);
+  return { ...result.data, temperature, instructions: (match[2] ?? "").trim() };
 }
 
 function gameFolder(gameId: string): URL {
