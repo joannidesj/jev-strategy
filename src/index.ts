@@ -3,6 +3,8 @@ export * from "./guides.js";
 export * from "./decide.js";
 export * from "./reads.js";
 export * from "./policy/index.js";
+export * from "./game-adapter.js";
+export * from "./decide-with-reads.js";
 export * from "./typesafe-client.js";
 export * from "./eval.js";
 export { jevVersion } from "./version.js";

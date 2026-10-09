@@ -31,6 +31,30 @@ the legal options, and get one option back.
 3. Write the body as short advice to a player.
 4. Run the tests, then run eval to see how the style plays.
 
+## Jev 2: reads and maths
+
+A style with `engine: v2` does not ask Jev which action to take. It asks for
+narrow reads, then lets code do the sums:
+
+- **Reads:** for each opponent, how strong their hand will be at showdown (a
+  Score over five levels), whether they are bluffing, and whether they would fold
+  to a pot-sized bet (Nouls). It also reads how scary our own board looks. The
+  wording lives in `games/<game>/reads.yaml`.
+- **Maths:** win chance weighted by the strength reads, fold equity from the fold
+  reads (smaller bets scare less), an expected value per option, then a soft-max
+  pick at the style's `temperature`.
+
+`decideWithReads` runs this for any game that supplies a `GameAdapter`. The
+adapter's five functions give the opponents' seats, the pot, the price to call,
+the chips each option puts in, and the win chances given the reads. Follow the
+Queen's adapter lives in the server, next to its rules engine.
+
+## Add a game
+
+1. Add `games/<id>/rules.md`, `strategy.md`, `reads.yaml` and `styles/*.md`.
+2. Implement a `GameAdapter` for the game's own seat view.
+3. Run the arena against the fixed bots before releasing.
+
 ## Run eval
 
 Eval replays the recorded decisions in `games/<game>/fixtures/*.json` through a
