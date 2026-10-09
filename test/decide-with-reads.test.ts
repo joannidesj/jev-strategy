@@ -164,3 +164,24 @@ describe("decideWithReads", () => {
     });
   });
 });
+
+describe("decideWithReads board read", () => {
+  it("treats a board read whose chances do not add up as neutral", async () => {
+    const neutral = await run(
+      { pot: 30, toCall: 0, win: 0.6 },
+      [option("check"), option("bet_big")],
+      {
+        folds_3: { type: "noul", noul: 0.5 },
+      },
+    );
+    const broken = await run(
+      { pot: 30, toCall: 0, win: 0.6 },
+      [option("check"), option("bet_big")],
+      {
+        folds_3: { type: "noul", noul: 0.5 },
+        board: { type: "score", probabilities: [0, 0, 0, 9], confidence: 1 },
+      },
+    );
+    expect(broken.evs.bet_big).toBeCloseTo(neutral.evs.bet_big!, 9);
+  });
+});

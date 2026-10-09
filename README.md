@@ -45,8 +45,9 @@ narrow reads, then lets code do the sums:
   pick at the style's `temperature`.
 
 `decideWithReads` runs this for any game that supplies a `GameAdapter`. The
-adapter's five functions give the opponents' seats, the pot, the price to call,
-the chips each option puts in, and the win chances given the reads. Follow the
+adapter's six functions give the opponents' seats, each opponent's chances from
+the visible cards, the pot, the price to call, the chips each option puts in, and
+the win chances given the reads. Follow the
 Queen's adapter lives in the server, next to its rules engine.
 
 ## Add a game

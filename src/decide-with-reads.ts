@@ -16,6 +16,7 @@ const NEUTRAL_FOLD = 0.3;
 const NEUTRAL_BLUFF = 0.2;
 const NEUTRAL_BOARD = 1.5;
 const STRENGTH_LEVELS = 5;
+const BOARD_LEVELS = 4;
 const BLUFF_EQUITY = 0.5;
 const CLEAR_WIN = 0.05;
 
@@ -41,16 +42,16 @@ function probability(answer: ReadAnswer | undefined, fallback: number): number {
   return answer.noul;
 }
 
-function levelsOf(answer: ReadAnswer | undefined): number[] | null {
-  if (answer?.type !== "score" || answer.probabilities.length !== STRENGTH_LEVELS) return null;
+function levelsOf(answer: ReadAnswer | undefined, count: number): number[] | null {
+  if (answer?.type !== "score" || answer.probabilities.length !== count) return null;
   const total = answer.probabilities.reduce((sum, p) => sum + p, 0);
   if (!(Math.abs(total - 1) < 0.01) || answer.probabilities.some((p) => !(p >= 0))) return null;
   return answer.probabilities;
 }
 
 function expectedLevel(answer: ReadAnswer | undefined): number {
-  if (answer?.type !== "score" || answer.probabilities.length === 0) return NEUTRAL_BOARD;
-  return answer.probabilities.reduce((sum, p, level) => sum + p * level, 0);
+  const levels = levelsOf(answer, BOARD_LEVELS);
+  return levels ? levels.reduce((sum, p, level) => sum + p * level, 0) : NEUTRAL_BOARD;
 }
 
 // Jev reads the table; the game adapter and the policy do every sum.
@@ -73,7 +74,7 @@ export async function decideWithReads<View>(input: ReadsInput<View>): Promise<Re
 
   const strength = new Map<number, { levels: number[]; trust: number }>();
   for (const seat of opponentSeats) {
-    const levels = levelsOf(reads[`strength_${seat}`]);
+    const levels = levelsOf(reads[`strength_${seat}`], STRENGTH_LEVELS);
     if (!levels) continue;
     const bluff = probability(reads[`bluffing_${seat}`], NEUTRAL_BLUFF);
     strength.set(seat, { levels, trust: style.readTrust * (1 - bluff) });
