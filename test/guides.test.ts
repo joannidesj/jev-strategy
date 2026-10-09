@@ -96,11 +96,20 @@ describe("Jev 2 style settings", () => {
       bluffBoost: 1,
       instinctWeight: 0.1,
       bluffFloor: 0.6,
+      realize: 1,
     });
   });
 
   it("rejects an unknown engine and a read trust above one", () => {
     expect(() => parseStyle("sample.md", withLines("engine: v3"))).toThrow(/engine/);
     expect(() => parseStyle("sample.md", withLines("readTrust: 1.5"))).toThrow(/readTrust/);
+  });
+});
+
+describe("realised equity setting", () => {
+  it("defaults to one and must stay between zero and one", () => {
+    expect(parseStyle("sample.md", validStyle).realize).toBe(1);
+    expect(parseStyle("sample.md", withLines("realize: 0.8")).realize).toBe(0.8);
+    expect(() => parseStyle("sample.md", withLines("realize: 1.2"))).toThrow(/realize/);
   });
 });

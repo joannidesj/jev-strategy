@@ -35,6 +35,7 @@ const style: Style = {
   bluffBoost: 1,
   instinctWeight: 0,
   bluffFloor: 0.6,
+  realize: 1,
   instructions: "",
 };
 
@@ -46,6 +47,7 @@ function adapter(seen: StrengthReads[] = []): GameAdapter<View> {
     priors: () => new Map([[3, [0.1, 0.1, 0.2, 0.4, 0.2]]]),
     pot: (view) => view.pot,
     toCall: (view) => view.toCall,
+    cardsToCome: () => 0,
     costs: (_view, options) => options.map((o) => ({ id: o.id, chips: chips[o.id] ?? 0 })),
     odds: (view, reads) => {
       seen.push(reads);
@@ -183,5 +185,25 @@ describe("decideWithReads board read", () => {
       },
     );
     expect(broken.evs.bet_big).toBeCloseTo(neutral.evs.bet_big!, 9);
+  });
+});
+
+describe("decideWithReads realised equity", () => {
+  const withRealize = (realize: number, cardsToCome: number) =>
+    decideWithReads({
+      adapter: { ...adapter(), cardsToCome: () => cardsToCome },
+      view: { pot: 30, toCall: 10, win: 0.5 },
+      situation: {},
+      options: [option("fold"), option("call")],
+      guide,
+      style: { ...style, realize },
+      client: client({}),
+      random: () => 0,
+      signal: new AbortController().signal,
+    });
+
+  it("discounts a call on round 1 by the full factor, and not at all on the last round", async () => {
+    expect((await withRealize(0.7, 3)).evs.call).toBeCloseTo(0.7 * 0.5 * 40 - 10);
+    expect((await withRealize(0.7, 0)).evs.call).toBeCloseTo(0.5 * 40 - 10);
   });
 });

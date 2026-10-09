@@ -16,6 +16,7 @@ const style: Style = {
   bluffBoost: 1,
   instinctWeight: 0,
   bluffFloor: 0.6,
+  realize: 1,
   instructions: "",
 };
 
@@ -104,5 +105,27 @@ describe("mix", () => {
       () => 0.5,
     );
     expect(probabilities.all_in).toBe(1);
+  });
+});
+
+describe("optionEvs with realised equity", () => {
+  const spot = { pot: 100, toCall: 20, eq: 0.5, eqCalled: 0.4 };
+
+  it("counts only part of the equity for checks and calls when betting still follows", () => {
+    const evs = optionEvs(
+      { ...spot, realize: 0.7 },
+      [
+        { id: "call", chips: 20 },
+        { id: "check", chips: 0 },
+      ],
+      0,
+    );
+    expect(evs.call).toBeCloseTo(0.7 * 0.5 * 120 - 20);
+    expect(evs.check).toBeCloseTo(0.7 * 0.5 * 100);
+  });
+
+  it("a realise factor of one changes nothing", () => {
+    const options = [{ id: "call" as const, chips: 20 }];
+    expect(optionEvs({ ...spot, realize: 1 }, options, 0)).toEqual(optionEvs(spot, options, 0));
   });
 });

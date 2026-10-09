@@ -25,6 +25,7 @@ const style: Style = {
   bluffBoost: 1,
   instinctWeight: 0.1,
   bluffFloor: 0.6,
+  realize: 1,
   instructions: "be bold",
 };
 const options: Option[] = [

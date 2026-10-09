@@ -28,6 +28,7 @@ export type Style = {
   bluffBoost: number;
   instinctWeight: number;
   bluffFloor: number;
+  realize: number;
   instructions: string;
 };
 export type GameGuide = { id: string; rules: string; strategy: string };

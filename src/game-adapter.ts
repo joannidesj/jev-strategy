@@ -10,6 +10,7 @@ export interface GameAdapter<View> {
   priors(view: View): ReadonlyMap<number, number[]>;
   pot(view: View): number;
   toCall(view: View): number;
+  cardsToCome(view: View): number;
   costs(view: View, options: Option[]): OptionCost[];
   odds(view: View, reads: StrengthReads): { win: number; winCalled: number };
 }

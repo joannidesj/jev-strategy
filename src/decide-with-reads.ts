@@ -90,7 +90,13 @@ export async function decideWithReads<View>(input: ReadsInput<View>): Promise<Re
       ? costs.filter((cost) => cost.id !== "all_in" && !(cost.chips >= pot && cost.id !== "call"))
       : costs;
   const evs = optionEvs(
-    { pot, toCall, eq: odds.win, eqCalled: odds.winCalled },
+    {
+      pot,
+      toCall,
+      eq: odds.win,
+      eqCalled: odds.winCalled,
+      realize: style.realize ** (adapter.cardsToCome(view) / 3),
+    },
     allowed.length > 0 ? allowed : costs,
     fe,
   );
