@@ -1,0 +1,35 @@
+notes: >-
+  Follow the Queen is five-card stud with a 32-card deck (Sevens to Aces).
+  Each player gets two cards face down, then three face up, with a betting
+  round before each face-up card and one after the last. Queens are always
+  wild. When a Queen is dealt face up, the rank of the next face-up card also
+  becomes wild. Wild cards can be any card. No-limit betting with play chips.
+strength:
+  question: >-
+    If this player reaches showdown, how strong will their five-card hand be?
+    Judge from their face-up cards, the wild cards, how they have bet this hand
+    and their habits.
+  levels:
+    - "Nothing: high card at showdown"
+    - "One small pair (Sevens to Tens)"
+    - "A big pair (Jacks to Aces) or two pair"
+    - "Three of a kind, a straight, a flush or a full house"
+    - "Four of a kind or better"
+bluffing:
+  question: >-
+    Is this player betting more strongly than their face-up cards and habits
+    support?
+  yes: "Their bets look bigger than their cards and history justify"
+  no: "Their bets match what their cards and history suggest"
+folds:
+  question: >-
+    If I bet about the size of the pot now, would this player fold?
+  yes: "They would fold to a pot-sized bet"
+  no: "They would call or raise a pot-sized bet"
+board:
+  question: How threatening do my face-up cards look to the other players?
+  levels:
+    - "Nothing that looks strong"
+    - "A high card or one wild card showing"
+    - "A visible pair or two wild cards showing"
+    - "Three of a kind or better showing"

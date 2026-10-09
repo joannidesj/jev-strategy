@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { parse } from "yaml";
 import { z } from "zod";
-import type { GameGuide, Style } from "./types.js";
+import type { GameGuide, ReadsGuide, Style } from "./types.js";
 
 const frontmatterShape = z.object({
   id: z.string().min(1),
@@ -12,6 +12,23 @@ const frontmatterShape = z.object({
   floor: z.number().min(0).lt(1).default(0),
   temperature: z.number().positive().default(1),
   minConfidence: z.number().min(0).max(1).default(0),
+  engine: z.enum(["v1", "v2"]).default("v1"),
+  readTrust: z.number().min(0).max(1).default(0.6),
+  bluffBoost: z.number().positive().default(1),
+  instinctWeight: z.number().min(0).default(0.1),
+  bluffFloor: z.number().min(0).max(1).default(0.6),
+});
+
+const readsShape = z.object({
+  notes: z.string().min(1),
+  strength: z.object({ question: z.string().min(1), levels: z.array(z.string().min(1)).length(5) }),
+  bluffing: z.object({
+    question: z.string().min(1),
+    yes: z.string().min(1),
+    no: z.string().min(1),
+  }),
+  folds: z.object({ question: z.string().min(1), yes: z.string().min(1), no: z.string().min(1) }),
+  board: z.object({ question: z.string().min(1), levels: z.array(z.string().min(1)).length(4) }),
 });
 
 const frontmatterPattern = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
@@ -63,4 +80,9 @@ export async function loadStyles(gameId: string): Promise<Map<string, Style>> {
     styles.set(style.id, style);
   }
   return styles;
+}
+
+export async function loadReads(gameId: string): Promise<ReadsGuide> {
+  const text = await readFile(new URL("reads.yaml", gameFolder(gameId)), "utf8");
+  return readsShape.parse(parse(text));
 }

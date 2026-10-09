@@ -23,9 +23,26 @@ export type Style = {
   floor: number;
   temperature: number;
   minConfidence: number;
+  engine: "v1" | "v2";
+  readTrust: number;
+  bluffBoost: number;
+  instinctWeight: number;
+  bluffFloor: number;
   instructions: string;
 };
 export type GameGuide = { id: string; rules: string; strategy: string };
+export type ReadsGuide = {
+  notes: string;
+  strength: { question: string; levels: string[] };
+  bluffing: { question: string; yes: string; no: string };
+  folds: { question: string; yes: string; no: string };
+  board: { question: string; levels: string[] };
+};
+export type ReadQuestion =
+  | { type: "score"; instructions: JsonValue; criteria: string[] }
+  | { type: "noul"; instructions: JsonValue; criteria: { true: string; false: string } }
+  | { type: "choice"; instructions: JsonValue; criteria: Record<string, string> };
+export type ReadsRequest = { state: Situation; questions: Record<string, ReadQuestion> };
 export type Decision = {
   optionId: OptionId;
   probabilities: Partial<Record<OptionId, number>>;

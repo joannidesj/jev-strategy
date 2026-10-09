@@ -20,6 +20,11 @@ const style: Style = {
   floor: 0,
   temperature: 1,
   minConfidence: 0,
+  engine: "v1",
+  readTrust: 0.6,
+  bluffBoost: 1,
+  instinctWeight: 0.1,
+  bluffFloor: 0.6,
   instructions: "be bold",
 };
 const options: Option[] = [
