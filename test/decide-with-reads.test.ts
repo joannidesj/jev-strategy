@@ -207,3 +207,32 @@ describe("decideWithReads realised equity", () => {
     expect((await withRealize(0.7, 0)).evs.call).toBeCloseTo(0.5 * 40 - 10);
   });
 });
+
+describe("decideWithReads minimum defence", () => {
+  const facing = (win: number, cardsToCome: number, random = 0.99) =>
+    decideWithReads({
+      adapter: { ...adapter(), cardsToCome: () => cardsToCome },
+      view: { pot: 12, toCall: 10, win },
+      situation: {},
+      options: [option("fold"), option("call")],
+      guide,
+      style: { ...style, realize: 0.6 },
+      client: client({}),
+      random: () => random,
+      signal: new AbortController().signal,
+    });
+
+  it("keeps calling an early bet at least as often as the pot before it is to the pot after it", async () => {
+    const decision = await facing(0.5, 3);
+    expect(decision.evs.call).toBeLessThan(0);
+    expect(decision.probabilities.fold).toBeCloseTo(10 / 12, 6);
+    expect(decision.probabilities.call).toBeCloseTo(2 / 12, 6);
+    expect(decision.optionId).toBe("call");
+    expect((await facing(0.5, 2)).probabilities.fold).toBeCloseTo(10 / 12, 6);
+  });
+
+  it("still folds a clearly losing hand, and leaves the late rounds alone", async () => {
+    expect((await facing(0.1, 3)).probabilities.fold).toBeCloseTo(1, 6);
+    expect((await facing(0.45, 1)).probabilities.fold).toBeCloseTo(1, 6);
+  });
+});

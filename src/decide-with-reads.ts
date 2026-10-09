@@ -19,6 +19,8 @@ const STRENGTH_LEVELS = 5;
 const BOARD_LEVELS = 4;
 const BLUFF_EQUITY = 0.5;
 const CLEAR_WIN = 0.05;
+const CLEAR_LOSS = 0.1;
+const EARLY_CARDS_TO_COME = 2;
 
 export type ReadsDecision = Decision & {
   reads: Record<string, ReadAnswer>;
@@ -103,6 +105,10 @@ export async function decideWithReads<View>(input: ReadsInput<View>): Promise<Re
   const best = Math.max(...Object.entries(evs).map(([id, ev]) => (id === "fold" ? 0 : ev!)));
   if (best > CLEAR_WIN * pot) delete evs.fold;
 
+  // Folding to every early bet lets any bettor win the antes; defend unless the call clearly loses.
+  const rawCall = odds.win * (pot + toCall) - toCall;
+  const early = toCall > 0 && adapter.cardsToCome(view) >= EARLY_CARDS_TO_COME;
+  const defend = early && "call" in evs && rawCall >= -CLEAR_LOSS * pot;
   const instinct = reads.instinct?.type === "choice" ? reads.instinct : null;
   const { optionId, probabilities } = mix(
     evs,
@@ -110,6 +116,7 @@ export async function decideWithReads<View>(input: ReadsInput<View>): Promise<Re
     instinct?.probabilities ?? {},
     style,
     input.random,
+    defend ? toCall / pot : 1,
   );
   return {
     optionId,
