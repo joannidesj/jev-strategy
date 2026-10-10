@@ -22,14 +22,14 @@ const frontmatterShape = z.object({
 
 const readsShape = z.object({
   notes: z.string().min(1),
-  strength: z.object({ question: z.string().min(1), levels: z.array(z.string().min(1)).length(5) }),
+  strength: z.object({ question: z.string().min(1), levels: z.array(z.string().min(1)).min(2) }),
   bluffing: z.object({
     question: z.string().min(1),
     yes: z.string().min(1),
     no: z.string().min(1),
   }),
   folds: z.object({ question: z.string().min(1), yes: z.string().min(1), no: z.string().min(1) }),
-  board: z.object({ question: z.string().min(1), levels: z.array(z.string().min(1)).length(4) }),
+  board: z.object({ question: z.string().min(1), levels: z.array(z.string().min(1)).min(2) }),
 });
 
 const frontmatterPattern = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
@@ -84,7 +84,10 @@ export async function loadStyles(gameId: string): Promise<Map<string, Style>> {
   return styles;
 }
 
-export async function loadReads(gameId: string): Promise<ReadsGuide> {
-  const text = await readFile(new URL("reads.yaml", gameFolder(gameId)), "utf8");
+export function parseReads(text: string): ReadsGuide {
   return readsShape.parse(parse(text));
+}
+
+export async function loadReads(gameId: string): Promise<ReadsGuide> {
+  return parseReads(await readFile(new URL("reads.yaml", gameFolder(gameId)), "utf8"));
 }

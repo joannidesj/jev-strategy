@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loadGame, loadStyles, parseStyle } from "../src/index.js";
+import { loadGame, loadStyles, parseReads, parseStyle } from "../src/index.js";
 
 const catalogIds = [
   "jev-not-jeeves",
@@ -121,5 +121,32 @@ describe("Jev 2 temperature default", () => {
       0.4,
     );
     expect(parseStyle("sample.md", validStyle).temperature).toBe(1);
+  });
+});
+
+describe("reads guides", () => {
+  const reads = (strength: string[], board: string[]) =>
+    [
+      "notes: n",
+      "strength:",
+      "  question: s",
+      "  levels:",
+      ...strength.map((level) => `    - "${level}"`),
+      "bluffing: { question: b, yes: y, no: n }",
+      "folds: { question: f, yes: y, no: n }",
+      "board:",
+      "  question: b",
+      "  levels:",
+      ...board.map((level) => `    - "${level}"`),
+    ].join("\n");
+
+  it("a game's reads guide sets how many strength and board levels Jev answers with", () => {
+    const guide = parseReads(reads(["low", "mid", "high"], ["calm", "scary"]));
+    expect(guide.strength.levels).toEqual(["low", "mid", "high"]);
+    expect(guide.board.levels).toEqual(["calm", "scary"]);
+  });
+
+  it("rejects a read with fewer than two levels", () => {
+    expect(() => parseReads(reads(["only"], ["calm", "scary"]))).toThrow();
   });
 });
