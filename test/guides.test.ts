@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loadGame, loadStyles, parseReads, parseStyle } from "../src/index.js";
+import { loadGame, loadReads, loadStyles, parseReads, parseStyle } from "../src/index.js";
 
 const catalogIds = [
   "jev-not-jeeves",
@@ -148,5 +148,28 @@ describe("reads guides", () => {
 
   it("rejects a read with fewer than two levels", () => {
     expect(() => parseReads(reads(["only"], ["calm", "scary"]))).toThrow();
+  });
+});
+
+describe("Texas Hold'em guides", () => {
+  it("loads the Hold'em rules, strategy, reads and the five Hold'em Jevs, all on Jev 2", async () => {
+    const guide = await loadGame("texas-holdem");
+    expect(guide.id).toBe("texas-holdem");
+    expect(guide.rules).toContain("Texas Hold'em");
+    expect(guide.strategy).toContain("board");
+    const reads = await loadReads("texas-holdem");
+    expect(reads.strength.levels).toHaveLength(5);
+    const styles = await loadStyles("texas-holdem");
+    expect([...styles.keys()].sort()).toEqual([
+      "jev-a-lanche",
+      "jev-alier",
+      "jev-not-jeeves",
+      "jev-try-hard",
+      "jevermind",
+    ]);
+    for (const style of styles.values()) {
+      expect(style.engine, style.id).toBe("v2");
+      expect(style.instructions, style.id).not.toMatch(/wild|Queen/i);
+    }
   });
 });

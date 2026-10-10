@@ -2,6 +2,12 @@
 
 The maintainer reviews playbook changes and publishes them together as a release. Jev doesn't learn on the fly.
 
+## 2.1.0 (2026-10-10)
+
+- Follow the Queen: Jev-try-hard no longer folds to most early bets. Facing a bet on the first two rounds, it keeps playing at least as often as the pot before the bet is to the pot after it, unless the call clearly loses.
+- Follow the Queen: the playbook now describes the live stakes. Everyone starts with 50 chips, and each bet or raise adds at most 10.
+- Texas Hold'em: a new game with its own playbook and five Jevs, Hold'em versions of the five strongest Follow the Queen Jevs: Jev-not-Jeeves, Jevermind, Jev-alier, Jev-try-hard and Jev-a-lanche. All five use Jev 2 and start from Jev-try-hard's tested settings; they have not been measured in the arena yet.
+
 ## 2.0.0 (2026-10-09)
 
 - Jev-try-hard moves to the new Jev 2 engine. Jev reads each opponent: how strong their hand will be at showdown, whether they are bluffing, and whether they would fold. Code then works out the value of every option and picks the best.

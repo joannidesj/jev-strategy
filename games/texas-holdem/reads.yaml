@@ -1,0 +1,38 @@
+notes: >-
+  Texas Hold'em is played with a 52-card deck. Each player has two hole cards
+  that only they can see and shares five face-up board cards: three on the
+  flop, one on the turn and one on the river, with a betting round before the
+  flop and after each of those. Each player makes the best five cards from
+  their two and the board. Bets and raises add at most 10 play chips.
+strength:
+  question: >-
+    If this player reaches showdown, how strong will their five-card hand be?
+    Start from fromVisibleCards, the chance of each level given only the board
+    and my own cards. Then move those chances for how this player has bet this
+    hand and their habits: heavy betting from a careful player points to the
+    stronger levels.
+  levels:
+    - "Nothing: high card at showdown"
+    - "One small pair (Twos to Tens)"
+    - "A big pair (Jacks to Aces) or two pair"
+    - "Three of a kind, a straight, a flush or a full house"
+    - "Four of a kind or better"
+bluffing:
+  question: >-
+    Is this player betting more strongly than the board and their habits
+    support?
+  yes: "Their bets look bigger than the board and their history justify"
+  no: "Their bets match what the board and their history suggest"
+folds:
+  question: >-
+    If I bet about the size of the pot now, would this player fold?
+  yes: "They would fold to a pot-sized bet"
+  no: "They would call or raise a pot-sized bet"
+board:
+  question: >-
+    How likely is the board to make my bets look strong to the other players?
+  levels:
+    - "A dry board with nothing that looks strong"
+    - "One high card or two cards of a suit on the board"
+    - "A pair, three cards of a suit, or three cards close in rank on the board"
+    - "Four cards of a suit or four to a straight on the board"
