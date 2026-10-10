@@ -52,9 +52,18 @@ Queen's adapter lives in the server, next to its rules engine.
 
 ## Add a game
 
-1. Add `games/<id>/rules.md`, `strategy.md`, `reads.yaml` and `styles/*.md`.
-2. Implement a `GameAdapter` for the game's own seat view.
-3. Run the arena against the fixed bots before releasing.
+Every game lives in its own folder, so adding one never touches another game.
+
+1. Add `games/<id>/`: `rules.md`, `strategy.md`, `reads.yaml`, `styles/*.md` and
+   `fixtures/`. The strength and board levels in `reads.yaml` set how many levels
+   Jev answers with; nothing in `src/` fixes those counts.
+2. In the site, add the game's engine rules (`packages/engine/src/games/<id>/`),
+   its view, events and summary (`packages/protocol/src/games/<id>.ts`), its
+   server kit with a `GameAdapter` for its seat view
+   (`packages/server/src/games/<id>/`), and its web module
+   (`packages/web/src/games/<id>/`). Each package registers the game in one line.
+3. Run the arena against the fixed bots before releasing, and give the game its
+   own section in `RELEASES.md`.
 
 ## Run eval
 
@@ -64,7 +73,7 @@ choice, marks the ones that changed, and ends with the number changed and the
 number of fixtures where Jev failed (a failure does not stop the run).
 
 ```sh
-pnpm -F @ftq/jev-strategy eval [styleId]
+pnpm -F @ftq/jev-strategy eval [styleId] [gameId]
 ```
 
 Eval reads `TYPESAFE_API_KEY` from `packages/server/.env` when it exists, or

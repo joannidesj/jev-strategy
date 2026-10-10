@@ -14,9 +14,6 @@ import type {
 
 const NEUTRAL_FOLD = 0.3;
 const NEUTRAL_BLUFF = 0.2;
-const NEUTRAL_BOARD = 1.5;
-const STRENGTH_LEVELS = 5;
-const BOARD_LEVELS = 4;
 const BLUFF_EQUITY = 0.5;
 const CLEAR_WIN = 0.05;
 const CLEAR_LOSS = 0.1;
@@ -51,9 +48,9 @@ function levelsOf(answer: ReadAnswer | undefined, count: number): number[] | nul
   return answer.probabilities;
 }
 
-function expectedLevel(answer: ReadAnswer | undefined): number {
-  const levels = levelsOf(answer, BOARD_LEVELS);
-  return levels ? levels.reduce((sum, p, level) => sum + p * level, 0) : NEUTRAL_BOARD;
+function expectedLevel(answer: ReadAnswer | undefined, count: number): number {
+  const levels = levelsOf(answer, count);
+  return levels ? levels.reduce((sum, p, level) => sum + p * level, 0) : (count - 1) / 2;
 }
 
 // Jev reads the table; the game adapter and the policy do every sum.
@@ -76,14 +73,18 @@ export async function decideWithReads<View>(input: ReadsInput<View>): Promise<Re
 
   const strength = new Map<number, { levels: number[]; trust: number }>();
   for (const seat of opponentSeats) {
-    const levels = levelsOf(reads[`strength_${seat}`], STRENGTH_LEVELS);
+    const levels = levelsOf(reads[`strength_${seat}`], input.guide.strength.levels.length);
     if (!levels) continue;
     const bluff = probability(reads[`bluffing_${seat}`], NEUTRAL_BLUFF);
     strength.set(seat, { levels, trust: style.readTrust * (1 - bluff) });
   }
   const odds = adapter.odds(view, strength);
   const folds = opponentSeats.map((seat) => probability(reads[`folds_${seat}`], NEUTRAL_FOLD));
-  const fe = foldEquity(folds, expectedLevel(reads.board), style.bluffBoost);
+  const fe = foldEquity(
+    folds,
+    expectedLevel(reads.board, input.guide.board.levels.length),
+    style.bluffBoost,
+  );
 
   const costs = adapter.costs(view, options);
   const shaky = folds.every((fold) => Math.abs(2 * fold - 1) < style.bluffFloor);

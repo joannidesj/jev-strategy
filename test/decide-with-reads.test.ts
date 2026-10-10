@@ -141,6 +141,24 @@ describe("decideWithReads", () => {
     expect(seen[0]!.size).toBe(0);
   });
 
+  it("takes the number of strength levels from the game's reads guide", async () => {
+    const seen: StrengthReads[] = [];
+    await decideWithReads({
+      adapter: adapter(seen),
+      view: { pot: 30, toCall: 0, win: 0.5 },
+      situation: {},
+      options: [option("check")],
+      guide: { ...guide, strength: { question: "s", levels: ["low", "mid", "high"] } },
+      style,
+      client: client({
+        strength_3: { type: "score", probabilities: [0.2, 0.3, 0.5], confidence: 1 },
+      }),
+      random: () => 0,
+      signal: new AbortController().signal,
+    });
+    expect(seen[0]!.get(3)).toEqual({ levels: [0.2, 0.3, 0.5], trust: 0.8 });
+  });
+
   it("puts the chances from the visible cards into the strength question", async () => {
     let asked: ReadsRequest | undefined;
     const capture: DecisionClient = {

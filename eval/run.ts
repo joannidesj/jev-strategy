@@ -8,7 +8,7 @@ import {
   seededRandom,
 } from "../src/index.js";
 
-const GAME = "follow-the-queen";
+const GAME = process.argv[3] ?? "follow-the-queen";
 const SEED = 1;
 
 try {
