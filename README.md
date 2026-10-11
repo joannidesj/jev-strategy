@@ -94,6 +94,12 @@ Jev changes only when the maintainer deploys a release.
 4. Add an entry to `RELEASES.md`.
 5. Deploy.
 
-## License
+## Licence
 
-MIT. See `LICENSE`.
+Source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+Free for any noncommercial use, as long as you keep the licence and this line:
+
+Required Notice: Copyright (c) 2026 joannidesj (https://github.com/joannidesj/jev-strategy)
+
+Commercial use needs a licence from the maintainer. Contributions are welcome
+under the [Contributor License Agreement](CLA.md). See [CONTRIBUTING.md](CONTRIBUTING.md).

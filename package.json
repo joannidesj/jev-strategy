@@ -2,7 +2,7 @@
   "name": "@ftq/jev-strategy",
   "version": "2.1.0",
   "private": true,
-  "license": "MIT",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
