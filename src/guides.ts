@@ -41,7 +41,9 @@ export function parseStyle(fileName: string, markdown: string): Style {
   try {
     data = parse(match[1] ?? "");
   } catch (error) {
-    throw new Error(`Style ${fileName} has unreadable frontmatter: ${String(error)}`);
+    throw new Error(`Style ${fileName} has unreadable frontmatter: ${String(error)}`, {
+      cause: error,
+    });
   }
   const result = frontmatterShape.safeParse(data);
   if (!result.success) {
