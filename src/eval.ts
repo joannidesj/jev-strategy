@@ -13,7 +13,14 @@ import type {
 } from "./types.js";
 
 const jsonValue: z.ZodType<JsonValue> = z.lazy(() =>
-  z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(jsonValue), z.record(jsonValue)]),
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.null(),
+    z.array(jsonValue),
+    z.record(z.string(), jsonValue),
+  ]),
 );
 
 const optionId = z.enum([
@@ -30,7 +37,7 @@ const optionId = z.enum([
 ]);
 
 const fixtureShape = z.object({
-  situation: z.record(jsonValue),
+  situation: z.record(z.string(), jsonValue),
   options: z
     .array(
       z.object({
@@ -41,7 +48,7 @@ const fixtureShape = z.object({
     )
     .min(1),
   choice: optionId,
-  probabilities: z.record(optionId, z.number()).nullable(),
+  probabilities: z.partialRecord(optionId, z.number()).nullable(),
 });
 
 export type Fixture = {
