@@ -101,5 +101,5 @@ Free for any noncommercial use, as long as you keep the licence and this line:
 
 Required Notice: Copyright (c) 2026 joannidesj (https://github.com/joannidesj/jev-strategy)
 
-Commercial use needs a licence from the maintainer. Contributions are welcome
-under the [Contributor License Agreement](CLA.md). See [CONTRIBUTING.md](CONTRIBUTING.md).
+Commercial use needs a licence from the maintainer: email tables@judgementtables.com.
+Contributions are welcome under the [Contributor License Agreement](CLA.md). See [CONTRIBUTING.md](CONTRIBUTING.md).

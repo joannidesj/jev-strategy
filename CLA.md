@@ -2,8 +2,8 @@
 
 Version 1.0
 
-This agreement is between you and joannidesj (the "Maintainer"), who owns and
-publishes jev-strategy. It covers every Contribution you submit to the project.
+This agreement is between you and joannidesj (the "Maintainer", reachable at
+tables@judgementtables.com), who owns and publishes jev-strategy. It covers every Contribution you submit to the project.
 Read it before you open a pull request. Agreeing to it is how your work can be
 included.
 
