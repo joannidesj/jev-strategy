@@ -8,7 +8,7 @@ jev-strategy is source-available under the
 [PolyForm Noncommercial License 1.0.0](LICENSE). You may read, run, change and
 share it for any noncommercial purpose, as long as you pass on the licence and
 the `Required Notice:` line. Commercial use needs a separate licence from the
-maintainer: open an issue titled "Commercial licence" to ask.
+maintainer: email tables@judgementtables.com or open an issue titled "Commercial licence".
 
 ## Contributor agreement
 
@@ -24,10 +24,18 @@ licensed versions. You keep the copyright in your work.
 
 ## Check your change
 
-Replay the recorded decisions through your style with your own TypeSafe key:
+The package runs on its own with Node 22 and pnpm:
 
 ```sh
-pnpm -F @ftq/jev-strategy eval [styleId] [gameId]
+pnpm install
+pnpm test
+```
+
+Then replay the recorded decisions through your style with your own TypeSafe key. Put
+`TYPESAFE_API_KEY=...` in a `.env` file next to `package.json` (git ignores it):
+
+```sh
+pnpm eval [styleId] [gameId]
 ```
 
 Say in the pull request which fixtures changed choice and why that is better.

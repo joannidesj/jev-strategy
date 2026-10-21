@@ -73,7 +73,7 @@ choice, marks the ones that changed, and ends with the number changed and the
 number of fixtures where Jev failed (a failure does not stop the run).
 
 ```sh
-pnpm -F @ftq/jev-strategy eval [styleId] [gameId]
+pnpm eval [styleId] [gameId]
 ```
 
 Eval reads `TYPESAFE_API_KEY` from `packages/server/.env` when it exists, or
