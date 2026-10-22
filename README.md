@@ -1,5 +1,9 @@
 # @ftq/jev-strategy
 
+Jev plays poker for free at [judgementtables.com](https://judgementtables.com):
+Follow the Queen and Texas Hold'em against the AI, with a weekly scoreboard of
+humans against AI. This repo is the decision core and playbook behind it.
+
 Turns a poker situation into a decision made by Jev, TypeSafe's judgment model.
 It describes the game in plain words, asks Jev how likely each legal option is,
 and picks one option according to a playing style.
